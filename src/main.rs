@@ -157,7 +157,7 @@ fn create_tray_icon(cfg: &Config) -> Result<(TrayIcon, MenuItem)> {
     let tray = TrayIconBuilder::new()
         .with_menu(Box::new(menu))
         .with_icon(icon)
-        .with_tooltip(&format!("{APP_NAME} — Battery: --"))
+        .with_tooltip(format!("{APP_NAME} — Battery: --"))
         .build()
         .map_err(|e| anyhow!("failed to build tray icon: {e}"))?;
 
@@ -212,7 +212,7 @@ fn update_battery_ui(pct: u8, tray: &mut TrayIcon, battery_item: &MenuItem, cfg:
 
     let _ = tray.set_icon(Some(build_tray_icon(Some(pct), cfg)));
     let _ = tray.set_tooltip(Some(format!("{APP_NAME} — Battery: {pct}%")));
-    battery_item.set_text(&format!("Battery: {pct}%"));
+    battery_item.set_text(format!("Battery: {pct}%"));
 }
 
 fn build_tray_icon(pct: Option<u8>, cfg: &Config) -> Icon {
@@ -245,12 +245,13 @@ fn build_tray_icon(pct: Option<u8>, cfg: &Config) -> Icon {
         for x in 0..SIZE {
             let idx = ((y * SIZE + x) * 4) as usize;
 
-            let battery_body_outline = (x >= 1 && x < 29 && (y == 7 || y == 24))
-                || (y >= 7 && y < 25 && (x == 0 || x == 28));
+            let battery_body_outline = ((1..29).contains(&x) && (y == 7 || y == 24))
+                || ((7..25).contains(&y) && (x == 0 || x == 28));
 
-            let battery_tip = x >= 29 && x < 32 && y >= 13 && y < 19;
+            let battery_tip = (29..32).contains(&x) && (13..19).contains(&y);
 
-            let battery_fill = fill_width > 0 && x >= 4 && x < 4 + fill_width && y >= 10 && y < 22;
+            let battery_fill =
+                fill_width > 0 && x >= 4 && x < 4 + fill_width && (10..22).contains(&y);
 
             let color = if battery_body_outline || battery_tip {
                 outline

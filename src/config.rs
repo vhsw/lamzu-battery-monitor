@@ -59,10 +59,10 @@ impl Config {
 pub fn load_config(app_dir: &Path) -> Config {
     let mut candidates: Vec<PathBuf> = Vec::new();
 
-    if let Ok(exe) = env::current_exe() {
-        if let Some(dir) = exe.parent() {
-            candidates.push(dir.join("config.toml"));
-        }
+    if let Ok(exe) = env::current_exe()
+        && let Some(dir) = exe.parent()
+    {
+        candidates.push(dir.join("config.toml"));
     }
 
     candidates.push(app_dir.join("config.toml"));
@@ -133,12 +133,12 @@ pub fn app_data_dir() -> PathBuf {
         }
     }
 
-    if let Ok(exe) = env::current_exe() {
-        if let Some(dir) = exe.parent() {
-            let p = dir.join("LamzuBatteryMonitor");
-            if fs::create_dir_all(&p).is_ok() {
-                return p;
-            }
+    if let Ok(exe) = env::current_exe()
+        && let Some(dir) = exe.parent()
+    {
+        let p = dir.join("LamzuBatteryMonitor");
+        if fs::create_dir_all(&p).is_ok() {
+            return p;
         }
     }
 
